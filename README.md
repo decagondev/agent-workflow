@@ -80,6 +80,3 @@ docker-compose up --build
 ## License
 MIT License
 
-## Contact
-[Your Contact Information]
-```
