@@ -106,3 +106,96 @@ A collaborative AI-powered development workflow platform that automates and stre
 - Consistent code quality maintenance
 - Reduced human intervention overhead
 - Smooth state transitions
+
+# Structure
+```
+ai-dev-workflow/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── KanbanBoard.js
+│   │   │   ├── TaskCard.js
+│   │   │   ├── AgentStatusIndicator.js
+│   │   │   └── WorkflowStateVisualizer.js
+│   │   ├── hooks/
+│   │   │   ├── useTaskManagement.js
+│   │   │   └── useAgentInteraction.js
+│   │   ├── services/
+│   │   │   ├── apiService.js
+│   │   │   └── websocketService.js
+│   │   ├── contexts/
+│   │   │   └── WorkflowContext.js
+│   │   └── pages/
+│   │       ├── Dashboard.js
+│   │       └── TaskDetail.js
+│   ├── styles/
+│   │   └── global.css
+│   └── package.json
+│
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   │   ├── taskController.js
+│   │   │   └── agentController.js
+│   │   ├── models/
+│   │   │   ├── Task.js
+│   │   │   └── Agent.js
+│   │   ├── services/
+│   │   │   ├── planningService.js
+│   │   │   ├── generationService.js
+│   │   │   └── reviewService.js
+│   │   ├── middleware/
+│   │   │   ├── authMiddleware.js
+│   │   │   └── validationMiddleware.js
+│   │   ├── routes/
+│   │   │   ├── taskRoutes.js
+│   │   │   └── agentRoutes.js
+│   │   ├── utils/
+│   │   │   ├── logger.js
+│   │   │   └── errorHandler.js
+│   │   └── server.js
+│   └── package.json
+│
+├── agents/
+│   ├── code-planner/
+│   │   ├── src/
+│   │   │   ├── planner.py
+│   │   │   └── strategy_generator.py
+│   │   └── requirements.txt
+│   ├── code-generator/
+│   │   ├── src/
+│   │   │   ├── generator.py
+│   │   │   └── language_models.py
+│   │   └── requirements.txt
+│   └── code-reviewer/
+│       ├── src/
+│       │   ├── reviewer.py
+│       │   └── analysis_engine.py
+│       └── requirements.txt
+│
+├── database/
+│   ├── migrations/
+│   │   ├── 001_create_tasks.sql
+│   │   └── 002_create_agents.sql
+│   └── schema.prisma
+│
+├── tests/
+│   ├── frontend/
+│   │   └── TaskManagement.test.js
+│   ├── backend/
+│   │   └── AgentOrchestration.test.js
+│   └── agents/
+│       ├── PlannerTests.py
+│       ├── GeneratorTests.py
+│       └── ReviewerTests.py
+│
+├── docker/
+│   ├── frontend.Dockerfile
+│   ├── backend.Dockerfile
+│   └── docker-compose.yml
+│
+├── .env.example
+├── .gitignore
+└── README.md
+```
