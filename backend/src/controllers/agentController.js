@@ -14,7 +14,6 @@ class AgentController {
         configuration 
       } = req.body;
 
-      // Check if agent with same name already exists
       const existingAgent = await Agent.findOne({ name });
       if (existingAgent) {
         return res.status(400).json({ 
@@ -164,7 +163,6 @@ class AgentController {
         return res.status(404).json({ message: 'Agent not found' });
       }
 
-      // Fetch recent tasks for detailed performance insights
       const recentTasks = await Task.find({ 
         assignedAgents: agent._id 
       })
@@ -172,4 +170,97 @@ class AgentController {
         .limit(20)
         .select('status createdAt');
 
-      // Calculate task
+      const performanceBreakdown = {
+        completedTasks: recentTasks.filter(task => task.status === 'Completed').length,
+        totalTasks: recentTasks.length,
+        successRate: agent.performanceMetrics.successRate,
+        averageCompletionTime: agent.performanceMetrics.averageCompletionTime
+      };
+
+      res.status(200).json({
+        performanceMetrics: agent.performanceMetrics,
+        performanceBreakdown,
+        recentTasks
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        message: 'Error retrieving agent performance', 
+        error: error.message 
+      });
+    }
+  }
+
+  /**
+   * Deactivate an agent
+   */
+  async deactivateAgent(req, res) {
+    try {
+      const { id } = req.params;
+
+      const agent = await Agent.findById(id);
+
+      if (!agent) {
+        return res.status(404).json({ message: 'Agent not found' });
+      }
+
+      const activeTasks = await Task.countDocuments({
+        assignedAgents: agent._id,
+        status: { $ne: 'Completed' }
+      });
+
+      if (activeTasks > 0) {
+        return res.status(400).json({ 
+          message: 'Cannot deactivate agent with active tasks' 
+        });
+      }
+
+      agent.isActive = false;
+      await agent.save();
+
+      res.status(200).json({
+        message: 'Agent deactivated successfully',
+        agent
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        message: 'Error deactivating agent', 
+        error: error.message 
+      });
+    }
+  }
+
+  /**
+   * Find available agents for a specific task type
+   */
+  async findAvailableAgents(req, res) {
+    try {
+      const { type } = req.query;
+
+      if (!type) {
+        return res.status(400).json({ 
+          message: 'Agent type is required' 
+        });
+      }
+
+      const availableAgents = await Agent.find({
+        type,
+        isActive: true,
+        $expr: { 
+          $lt: [{ $size: '$assignedTasks' }, 5]
+        }
+      });
+
+      res.status(200).json({
+        availableAgents,
+        count: availableAgents.length
+      });
+    } catch (error) {
+      res.status(500).json({ 
+        message: 'Error finding available agents', 
+        error: error.message 
+      });
+    }
+  }
+}
+
+export default new AgentController();
