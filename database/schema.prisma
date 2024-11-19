@@ -1,0 +1,101 @@
+// schema.prisma
+// Define data models for type-safe database interactions
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum TaskStatus {
+  TODO
+  PLANNING
+  READY_TO_CODE
+  GENERATING
+  REVIEW
+  CHANGES_REQUESTED
+  COMPLETED
+}
+
+enum AgentType {
+  CODE_PLANNER
+  CODE_GENERATOR
+  CODE_REVIEWER
+}
+
+enum AgentStatus {
+  IDLE
+  PROCESSING
+  ERROR
+  COMPLETED
+}
+
+model Task {
+  id                   String       @id @default(uuid())
+  title                String
+  description          String?
+  status               TaskStatus   @default(TODO)
+  currentCycle         Int          @default(0)
+  maxCycles            Int          @default(3)
+  
+  implementationPlan   Json?
+  generatedCode        String?
+  reviewComments       String?
+  
+  planningAgent        Agent?       @relation(name: "PlanningTasks", fields: [planningAgentId], references: [id])
+  planningAgentId      String?
+  
+  generationAgent      Agent?       @relation(name: "GenerationTasks", fields: [generationAgentId], references: [id])
+  generationAgentId    String?
+  
+  reviewAgent          Agent?       @relation(name: "ReviewTasks", fields: [reviewAgentId], references: [id])
+  reviewAgentId        String?
+  
+  createdBy            User?        @relation(fields: [createdById], references: [id])
+  createdById          String?
+  
+  assignedTo           User?        @relation(name: "AssignedTasks", fields: [assignedToId], references: [id])
+  assignedToId         String?
+  
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+model Agent {
+  id                   String       @id @default(uuid())
+  name                 String       @unique
+  type                 AgentType
+  
+  totalTasksProcessed  Int          @default(0)
+  successRate          Float        @default(0)
+  averageProcessingTime DateTime?
+  
+  modelVersion         String?
+  configuration        Json?
+  
+  currentStatus        AgentStatus  @default(IDLE)
+  
+  planningTasks        Task[]       @relation(name: "PlanningTasks")
+  generationTasks      Task[]       @relation(name: "GenerationTasks")
+  reviewTasks          Task[]       @relation(name: "ReviewTasks")
+  
+  errorCount           Int          @default(0)
+  lastErrorMessage     String?
+  
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
+
+model User {
+  id                   String       @id @default(uuid())
+  email                String       @unique
+  name                 String
+  createdTasks         Task[]
+  assignedTasks        Task[]       @relation(name: "AssignedTasks")
+  
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+}
