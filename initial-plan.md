@@ -199,3 +199,25 @@ ai-dev-workflow/
 ├── .gitignore
 └── README.md
 ```
+
+setup vite
+
+```
+npm create vite@latest frontend -- --template react-ts
+cd frontend
+npm install axios react-router-dom
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+shadcnui
+
+```
+npx shadcn-ui@latest add button
+npx shadcn-ui@latest add dialog
+npx shadcn-ui@latest add input
+npx shadcn-ui@latest add textarea
+npx shadcn-ui@latest add toast
+```
+
+
