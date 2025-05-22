@@ -20,7 +20,7 @@ An intelligent, agent-powered development workflow system that automates softwar
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/ai-dev-workflow.git
+git clone https://github.com/decagondev/ai-dev-workflow.git
 cd ai-dev-workflow
 ```
 
